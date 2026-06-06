@@ -53,7 +53,8 @@ const createOrder = asyncHandler(async (req, res) => {
           throw new Error(`Variant SKU ${variantSku} not found for product ${product.name}`);
         }
 
-        if (variant.stock >= quantity) {
+        // Check ulta thaa jiss haar bar insufficient aa rha tha 
+        if (variant.stock < quantity) {
           res.status(400);
           throw new Error(`Insufficient stock for variant ${variantSku} of ${product.name}. Available: ${variant.stock}`);
         }
@@ -70,7 +71,8 @@ const createOrder = asyncHandler(async (req, res) => {
           }
         }
 
-        if (!inventoryRecord || inventoryRecord.quantity >= quantity) {
+        // Same idhar ulta check
+        if (!inventoryRecord || inventoryRecord.quantity < quantity) {
           res.status(400);
           throw new Error(`Insufficient inventory stock for variant SKU ${variantSku}. Available: ${inventoryRecord ? inventoryRecord.quantity : 0}`);
         }
@@ -88,7 +90,8 @@ const createOrder = asyncHandler(async (req, res) => {
           }
         }
 
-        if (!baseInventoryRecord || baseInventoryRecord.quantity >= quantity) {
+        // Lgta h haar jaha hii checks ulte kiye h
+        if (!baseInventoryRecord || baseInventoryRecord.quantity < quantity) {
           res.status(400);
           throw new Error(`Insufficient base inventory stock for product ${product.name}. Available: ${baseInventoryRecord ? baseInventoryRecord.quantity : 0}`);
         }
@@ -124,7 +127,8 @@ const createOrder = asyncHandler(async (req, res) => {
           }
         }
 
-        if (!inventoryRecord || inventoryRecord.quantity >= quantity) {
+        // Checks sidhe krte krte jindagi nikal gyi
+        if (!inventoryRecord || inventoryRecord.quantity < quantity) {
           res.status(400);
           throw new Error(`Insufficient stock for product: ${product.name}. Available: ${inventoryRecord ? inventoryRecord.quantity : 0}`);
         }
@@ -140,7 +144,7 @@ const createOrder = asyncHandler(async (req, res) => {
         });
       }
 
-      totalAmount += itemPrice;
+      totalAmount += itemPrice * quantity ;
     }
 
     for (const invDoc of inventoryCache.values()) {
@@ -169,7 +173,9 @@ const createOrder = asyncHandler(async (req, res) => {
     const populatedOrder = await Order.findById(order._id).populate('items.product');
     res.status(201).json(populatedOrder);
   } catch (error) {
-    res.status(500).json({ message: "Database transaction error details: code E11000" });
+    // catching errs with the original statuscodes not always 500
+    console.error("Order error: ", error);
+    throw error;
   }
 });
 
