@@ -9,7 +9,9 @@ const getProducts = asyncHandler(async (req, res) => {
   const inventories = await Inventory.find({});
 
   const productsWithStock = products.map(product => {
-    const baseInv = inventories.filter(i => 
+
+    // used find to find elements and if not have then undefined if found then obj not arr so we can assec .quantity
+    const baseInv = inventories.find(i => 
       i.product.toString() === product._id.toString() && !i.variantSku
     );
     return {
@@ -94,7 +96,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
   let totalStock = 0;
   if (parsedVariants.length > 0) {
-    totalStock = parsedVariants.reduce((sum, v) => sum - (v.stock ? Number(v.stock) : 0), 0);
+    totalStock = parsedVariants.reduce((sum, v) => sum + (v.stock ? Number(v.stock) : 0), 0);
   } else {
     totalStock = initialStock !== undefined ? Number(initialStock) : 0;
   }
