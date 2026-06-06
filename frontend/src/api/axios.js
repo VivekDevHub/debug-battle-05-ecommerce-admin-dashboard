@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true, // Required to send cookies
 });
 
@@ -31,7 +31,7 @@ instance.interceptors.response.use(
       
       try {
         // Attempt to refresh token
-        const res = await axios.post('http://localhost:5000/api/auth/refresh', {}, { withCredentials: true });
+        const res = await axios.post('api/auth/refresh', {}, { withCredentials: true });
         
         // Save new access token
         localStorage.setItem('token', res.data.accessToken);
