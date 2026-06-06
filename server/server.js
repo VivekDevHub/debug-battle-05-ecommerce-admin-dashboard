@@ -5,13 +5,15 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
-connectDB();
+
+// env bina load kiye hiii d bcall hua toh us tk connection string nhi pahucha main err iss aapp crash mar rha h
 dotenv.config();
+connectDB();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors({ origin: 'http://localhost:5173/', credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
