@@ -57,7 +57,6 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user.id,
       username: user.username,
       email: user.email,
-      password: user.password,
       accessToken,
     });
   } else {
@@ -91,7 +90,6 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       username: user.username,
       email: user.email,
-      password: user.password,
       accessToken,
     });
   } else {
