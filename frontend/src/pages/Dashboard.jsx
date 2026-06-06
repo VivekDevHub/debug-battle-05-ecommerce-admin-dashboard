@@ -91,13 +91,12 @@ const Dashboard = () => {
   const [selectedViewOrder, setSelectedViewOrder] = useState(null);
   const [toasts, setToasts] = useState([]);
 
+  // basic usestate behaviour  
   const showToast = (message, type = 'success') => {
     const id = Math.random().toString(36).substr(2, 9);
-    toasts.push({ id, message, type });
-    setToasts(toasts);
+    setToasts(prev => [...prev, { id, message, type }]);
     setTimeout(() => {
-      const filtered = toasts.filter((t) => t.id !== id);
-      setToasts(filtered);
+      setToasts(prev => prev.filter((t) => t.id !== id));
     }, 4000);
   };
 
@@ -152,7 +151,7 @@ const Dashboard = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
-      setLoading(true);
+      // remove the loader from here 
     }
   };
 
@@ -222,13 +221,14 @@ const Dashboard = () => {
       formData.append('category', newProduct.category);
       formData.append('initialStock', newProduct.initialStock);
       formData.append('warehouse', newProduct.warehouse);
-      formData.append('variants', productVariants.toString());
+      // formData.append('variants', productVariants.toString()); JSON hota h stringify mee 
+      formData.append('variants', JSON.stringify(productVariants));
 
       if (productImage) {
         formData.append('image', productImage);
       }
 
-      await axios.post('/product', formData, {
+      await axios.post('/products', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -305,7 +305,7 @@ const Dashboard = () => {
           quantity: Number(item.quantity)
         }))
       };
-      const response = await axios.post('/order', payload);
+      const response = await axios.post('/orders', payload);
       showToast(`Order ${response.data.orderNumber} created successfully.`, 'success');
       setShowOrderModal(false);
       setNewOrder({
@@ -1799,7 +1799,7 @@ const Dashboard = () => {
                             )}
                           </TableCell>
                           <TableCell className="text-center font-mono text-xs text-zinc-300 py-2">{item.quantity}x</TableCell>
-                          <TableCell className="text-right font-mono text-xs text-zinc-300 py-2">{storeSettings.currency}{item.price.toFixed(2)}</TableCell>
+                          <TableCell className="text-right font-mono text-xs text-zinc-300 py-2">{storeSettings.currency}{item.price?.toFixed(2) ?? '0.00'}</TableCell>
                           <TableCell className="text-right font-mono text-xs text-white py-2">{storeSettings.currency}{(item.price * item.quantity).toFixed(2)}</TableCell>
                         </TableRow>
                       ))}
