@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import axios from '../api/axios';
 
 export const AuthContext = createContext();
@@ -26,13 +26,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const response = await axios.post('/auth/login', { email, password });
-    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('token', response.data.accessToken); // backend accestoken de rha ha 
     setUser(response.data);
   };
 
   const register = async (username, email, password) => {
     const response = await axios.post('/auth/register', { username, email, password });
-    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('token', response.data.accessToken); // backend accestoken de rha ha 
     setUser(response.data);
   };
 
