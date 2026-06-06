@@ -11,7 +11,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
       id: user._id,
       username: user.username,
       email: user.email,
-      password: user.password, // Included only because of the user's specific frontend request
       profile: user.profile
     });
   } else {
@@ -41,7 +40,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       id: updatedUser._id,
       username: updatedUser.username,
       email: updatedUser.email,
-      password: updatedUser.password, // Included only because of previous requirement
       profile: updatedUser.profile
     });
   } else {
